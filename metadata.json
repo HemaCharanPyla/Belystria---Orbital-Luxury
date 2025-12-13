@@ -1,0 +1,7 @@
+{
+  "name": "Belystria - Orbital Luxury",
+  "description": "The world's first luxury orbital space hotel. Experience the Overview Effect in a rotating torus habitat 400km above Earth.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
