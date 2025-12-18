@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
@@ -50,6 +51,7 @@
       body {
         background-color: #020617;
         color: #f8fafc;
+        overflow-x: hidden;
       }
       /* Custom scrollbar */
       ::-webkit-scrollbar {
@@ -69,11 +71,12 @@
   <script type="importmap">
 {
   "imports": {
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "recharts": "https://esm.sh/recharts@^3.5.1",
+    "recharts": "https://esm.sh/recharts@^3.5.1?bundle",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.474.0?bundle",
     "@google/genai": "https://esm.sh/@google/genai@^1.33.0"
   }
 }
@@ -81,5 +84,6 @@
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>

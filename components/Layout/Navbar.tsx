@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Rocket } from 'lucide-react';
-import { SectionId } from '../../types';
+import { SectionId } from '../../types.ts';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
