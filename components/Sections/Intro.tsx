@@ -1,16 +1,80 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronRight, Rocket, ShieldCheck, Globe } from 'lucide-react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Stars, Float, PerspectiveCamera, MeshDistortMaterial } from '@react-three/drei';
+import * as THREE from 'three';
+import { ChevronRight, ShieldCheck, Globe, Navigation2 } from 'lucide-react';
 
 interface IntroProps {
   onComplete: () => void;
 }
 
+// 3D Solar System Component
+const CosmicBackground = () => {
+  const orbitsRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (orbitsRef.current) {
+      orbitsRef.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+    }
+  });
+
+  return (
+    <>
+      <color attach="background" args={['#020617']} />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[0, 0, 0]} intensity={3} color="#f59e0b" />
+      
+      <Stars radius={100} depth={50} count={6000} factor={4} saturation={0.5} fade speed={1} />
+      
+      <group ref={orbitsRef}>
+        {/* The Sun / Central Star */}
+        <Float speed={2} rotationIntensity={1} floatIntensity={1}>
+          <mesh>
+            <sphereGeometry args={[2.5, 64, 64]} />
+            <MeshDistortMaterial
+              color="#f59e0b"
+              emissive="#f59e0b"
+              emissiveIntensity={2}
+              distort={0.3}
+              speed={2}
+            />
+          </mesh>
+        </Float>
+
+        {/* Orbital Rings */}
+        {[8, 14, 22, 32].map((radius, i) => (
+          <group key={i}>
+            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[radius, radius + 0.05, 128]} />
+              <meshBasicMaterial color="white" transparent opacity={0.15} side={THREE.DoubleSide} />
+            </mesh>
+            
+            {/* Small Stylized Planets / Nodes */}
+            <mesh position={[Math.cos(i) * radius, 0, Math.sin(i) * radius]}>
+              <sphereGeometry args={[0.3 + (i * 0.1), 32, 32]} />
+              <meshStandardMaterial color={i % 2 === 0 ? "#22d3ee" : "#f8fafc"} emissive={i % 2 === 0 ? "#22d3ee" : "#f8fafc"} emissiveIntensity={0.5} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      <OrbitControls 
+        enablePan={false} 
+        enableZoom={true} 
+        minDistance={10} 
+        maxDistance={50} 
+        autoRotate 
+        autoRotateSpeed={0.5} 
+      />
+    </>
+  );
+};
+
 const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   const [stage, setStage] = useState<'loading' | 'swipe' | 'zoom'>('loading');
   const [swipeX, setSwipeX] = useState(0);
   const touchStart = useRef<number | null>(null);
-  const containerWidth = typeof window !== 'undefined' ? window.innerWidth : 400;
 
   useEffect(() => {
     const timer = setTimeout(() => setStage('swipe'), 2500);
@@ -18,15 +82,14 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
   }, []);
 
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
     touchStart.current = clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
     if (touchStart.current !== null) {
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
       const delta = clientX - touchStart.current;
-      // Only allow swiping to the right
       if (delta > 0) setSwipeX(Math.min(delta, 300));
     }
   };
@@ -59,7 +122,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
           </div>
         </div>
         <div className="text-center">
-          <p className="text-gold-500 font-mono text-[10px] tracking-[0.5em] uppercase mb-4">Syncing Orbital Node</p>
+          <p className="text-gold-500 font-mono text-[10px] tracking-[0.5em] uppercase mb-4">Initialising Interstellar Link</p>
           <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden">
             <div className="h-full bg-gold-500 animate-[loadingBar_2.5s_ease-in-out]"></div>
           </div>
@@ -76,7 +139,7 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] bg-black transition-all duration-[1500ms] ease-in overflow-hidden ${stage === 'zoom' ? 'scale-[15] opacity-0 pointer-events-none' : ''}`}
+      className={`fixed inset-0 z-[100] bg-black transition-all duration-[1500ms] ease-in overflow-hidden ${stage === 'zoom' ? 'scale-[20] opacity-0 pointer-events-none' : ''}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -85,50 +148,34 @@ const Intro: React.FC<IntroProps> = ({ onComplete }) => {
       onMouseUp={handleTouchEnd}
       onMouseLeave={handleTouchEnd}
     >
-      {/* Cosmic Background: Solar System View */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Deep Space Gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#1e293b_0%,_#020617_80%)]"></div>
-        
-        {/* Distant Sun */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-[120px] opacity-40"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_40px_10px_rgba(255,255,255,0.8)]"></div>
-
-        {/* Orbit Rings (Stylized Solar System) */}
-        {[10, 20, 35, 50, 70].map((radius, i) => (
-          <div 
-            key={i}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-white/5 rounded-full"
-            style={{ width: `${radius}vw`, height: `${radius}vw` }}
-          ></div>
-        ))}
-
-        {/* Stars */}
-        {[...Array(150)].map((_, i) => (
-          <div 
-            key={i} 
-            className="absolute bg-white rounded-full opacity-40"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 1.5}px`,
-              height: `${Math.random() * 1.5}px`,
-              animation: `pulse ${3 + Math.random() * 5}s infinite`
-            }}
-          ></div>
-        ))}
+      {/* 3D Background Layer */}
+      <div className="absolute inset-0 z-0">
+        <Suspense fallback={null}>
+          {/* Fix: Removed invalid shadowScale prop and enabled standard shadows */}
+          <Canvas shadows>
+            <PerspectiveCamera makeDefault position={[0, 15, 30]} />
+            <CosmicBackground />
+          </Canvas>
+        </Suspense>
       </div>
 
-      {/* Interactive Swipe UI */}
-      <div className="relative h-full flex flex-col items-center justify-center px-6">
+      {/* Interactive UI Overlays */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 pointer-events-none">
+        
+        {/* 3D Hint */}
+        <div className="absolute top-12 flex items-center gap-3 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-[9px] text-gray-400 uppercase tracking-[0.4em] font-black animate-pulse">
+          <Navigation2 className="w-3 h-3 text-gold-400" />
+          3D Navigation Active
+        </div>
+
         <div className="mb-16 text-center">
-          <h1 className="font-serif text-5xl md:text-7xl text-white tracking-[0.2em] mb-4">BELYSTRIA</h1>
+          <h1 className="font-serif text-5xl md:text-7xl text-white tracking-[0.2em] mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">BELYSTRIA</h1>
           <div className="h-px w-32 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto mb-6"></div>
           <p className="text-gold-500/80 uppercase tracking-[0.4em] text-[10px] font-bold">Orbital Boarding Protocol</p>
         </div>
 
         <div 
-          className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3rem] w-full max-w-sm flex flex-col items-center shadow-2xl transition-transform duration-200"
+          className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3rem] w-full max-w-sm flex flex-col items-center shadow-2xl transition-transform duration-200 pointer-events-auto"
           style={{ transform: `translateX(${swipeX}px)` }}
         >
           <div className="w-20 h-20 bg-gold-500/5 border border-gold-500/20 rounded-full flex items-center justify-center mb-8 relative">

@@ -1,4 +1,5 @@
-import { Amenity, SpecItem } from './types';
+
+import { Amenity, SpecItem, TierInfo } from './types';
 
 export const AMENITIES: Amenity[] = [
   {
@@ -39,12 +40,55 @@ export const AMENITIES: Amenity[] = [
 ];
 
 export const TECHNICAL_SPECS: SpecItem[] = [
-  { label: 'Orbit Altitude', value: '400 km', detail: 'Low Earth Orbit (LEO)' },
-  { label: 'Orbital Period', value: '92 mins', detail: '16 Sunrises per day' },
-  { label: 'Velocity', value: '7.67 km/s', detail: '27,600 km/h' },
+  { label: 'Rotation Speed', value: '1.94 RPM', detail: 'Optimized for 0.38g' },
+  { label: 'Tangential Vel', value: '18.3 m/s', detail: '66 km/h at Rim' },
+  { label: 'Angular Vel', value: '0.20 rad/s', detail: 'Constant Velocity' },
+  { label: 'Orbital Velocity', value: '7.67 km/s', detail: '27,600 km/h' },
   { label: 'Diameter', value: '180 m', detail: 'Rotating Torus' },
-  { label: 'Gravity (Rim)', value: '0.38 G', detail: 'Martian Gravity Equivalent' },
   { label: 'Capacity', value: '400', detail: '280 Guests, 120 Crew' },
+];
+
+export const MISSION_TIERS: TierInfo[] = [
+  {
+    id: 'voyager',
+    label: 'Voyager Class',
+    price: '$2.5M',
+    duration: '3 Days',
+    description: 'The definitive orbital introduction. Witness 48 sunrises and experience the pure awe of the Overview Effect from our standard observation decks.',
+    perks: [
+      'Standard Earth-view Habitation',
+      'Full Zero-G Ballroom Access',
+      'Curated Orbital Astronomy Tours',
+      'Commemorative Flight Patch'
+    ]
+  },
+  {
+    id: 'pioneer',
+    label: 'Pioneer Class',
+    price: '$5.0M',
+    duration: '7 Days',
+    description: 'For those who seek deeper cosmic connection. Extended duration allows for complete physiological adaptation to 0.38g and deeper wellness immersion.',
+    perks: [
+      'Premium Horizon-view Suite',
+      'Private Microgravity Wellness Session',
+      'Astra Dome Priority Access',
+      'Personalized Aeroponic Dining Plan'
+    ]
+  },
+  {
+    id: 'legacy',
+    label: 'Legacy Suite',
+    price: '$12.0M',
+    duration: '7 Days',
+    description: 'The pinnacle of extraterrestrial residence. A multi-room module featuring 360-degree panoramic views and a dedicated mission support team.',
+    perks: [
+      'Private Multi-module Master Suite',
+      'Exclusive EVA Spacewalk Experience',
+      'Personal AI Concierge Steward',
+      'Private Captain\'s Table Dining',
+      'Commemorative Bespoke Flight Suit'
+    ]
+  }
 ];
 
 export const MARKET_DATA = [

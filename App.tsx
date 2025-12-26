@@ -5,25 +5,17 @@ import Footer from './components/Layout/Footer.tsx';
 import Hero from './components/Sections/Hero.tsx';
 import About from './components/Sections/About.tsx';
 import Experience from './components/Sections/Experience.tsx';
-import Technology from './components/Sections/Technology.tsx';
+import ViewVisualizer from './components/Sections/ViewVisualizer.tsx';
 import Science from './components/Sections/Science.tsx';
 import Market from './components/Sections/Market.tsx';
 import Contact from './components/Sections/Contact.tsx';
 import Intro from './components/Sections/Intro.tsx';
-import { SectionId } from './types.ts';
 
 function App() {
   const [isLaunched, setIsLaunched] = useState(false);
 
   const handleLaunch = () => {
     setIsLaunched(true);
-    // After the zoom animation completes, scroll directly to reservation
-    setTimeout(() => {
-      const contactSection = document.getElementById(SectionId.CONTACT);
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 500);
   };
 
   return (
@@ -36,7 +28,7 @@ function App() {
           <Hero />
           <About />
           <Experience />
-          <Technology />
+          <ViewVisualizer />
           <Science />
           <Market />
           <Contact />

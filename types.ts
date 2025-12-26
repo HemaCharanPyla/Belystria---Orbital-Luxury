@@ -1,3 +1,4 @@
+
 export interface Amenity {
   id: string;
   title: string;
@@ -12,6 +13,15 @@ export interface SpecItem {
   detail: string;
 }
 
+export interface TierInfo {
+  id: string;
+  label: string;
+  price: string;
+  duration: string;
+  description: string;
+  perks: string[];
+}
+
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
@@ -21,6 +31,7 @@ export enum SectionId {
   HOME = 'home',
   ABOUT = 'about',
   EXPERIENCE = 'experience',
+  VISUALIZER = 'visualizer',
   TECHNOLOGY = 'technology',
   SCIENCE = 'science',
   MARKET = 'market',
